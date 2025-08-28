@@ -1,0 +1,20 @@
+# Visual Studio
+.vs/
+
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+
+# NuGet packages
+*.nupkg
+
+# Debugging
+*.pdb
+*.user
+
+# Project files
+*.csproj.user
+*.sln.suo
+
+# Mac files
+.DS_Store
