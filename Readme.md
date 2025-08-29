@@ -40,10 +40,19 @@ The following endpoints are currently implemented:
     ```
 4.  **Configure API Gateway:** Follow the instructions in the AWS Management Console to create a REST API and link the `/tasks` resource to your Lambda function.
 
-If you don't want to run the project, please view [this](https://github.com/adamgrime/aws-task-manager-api/pull/2) PR which contains screenshots of the endpoints in use.
+If you don't want to run the project, please view [this](https://github.com/adamgrime/aws-task-manager-api/pull/2) PR which contains screenshots demonstrating the following endpoints: 
+
+* GET /tasks 
+* GET /tasks/{id}
+* PUT /tasks/{id}
+
+And [this](https://github.com/adamgrime/aws-task-manager-api/pull/3) PR which contains screenshots demonstrating the following endpoints:
+
+* GET /tasks
+* POST /tasks
+* DELETE /tasks/{id}
 
 ## What's Next
 
-* Implementing the remaining CRUD operations: `DELETE /tasks/{id}`.
 * Refactoring the project into separate layers to adhere to Clean Architecture principles.
 * Adding structured logging with AWS CloudWatch.
