@@ -23,6 +23,8 @@ The following endpoints are currently implemented:
     * **Purpose:** Creates a new task.
 * **`GET /tasks/{id}`**
     * **Purpose:** Retrieves a single task.
+* **`PUT /tasks/{id}`**
+    * **Purpose:** Updates a single task.
 
 ## How to Run
 
@@ -40,6 +42,6 @@ The following endpoints are currently implemented:
 
 ## What's Next
 
-* Implementing the remaining CRUD operations: `PUT /tasks/{id}`, and `DELETE /tasks/{id}`.
+* Implementing the remaining CRUD operations: `DELETE /tasks/{id}`.
 * Refactoring the project into separate layers to adhere to Clean Architecture principles.
 * Adding structured logging with AWS CloudWatch.
