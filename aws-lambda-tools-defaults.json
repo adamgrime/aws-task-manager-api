@@ -6,11 +6,11 @@
     "All the command line options for the Lambda command can be specified in this file."
   ],
   "profile": "adamgrime-personal-dev",
-  "region": "us-east-1",
+  "region": "eu-west-1",
   "configuration": "Release",
   "function-architecture": "x86_64",
   "function-runtime": "dotnet8",
   "function-memory-size": 512,
   "function-timeout": 30,
-  "function-handler": "TaskManager.Api::TaskManager.Api.Function::FunctionHandlersss"
+  "function-handler": "TaskManager.API::TaskManager.API.Function::FunctionHandler"
 }
