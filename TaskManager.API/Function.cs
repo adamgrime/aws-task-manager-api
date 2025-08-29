@@ -45,6 +45,7 @@ public class Function
             ("GET", { }) => await GetTaskById(taskId),
             ("POST", null) => await CreateTask(request),
             ("PUT", { }) => await UpdateTask(request),
+            ("DELETE", { }) => await DeleteTask(request),
             _ => new APIGatewayProxyResponse { StatusCode = (int)HttpStatusCode.MethodNotAllowed, Body = "{\"message\":\"Method not allowed.\"}" },
         };
     }
@@ -164,5 +165,27 @@ public class Function
                 Body = "{\"message\":\"Invalid request body.\"}"
             };
         }
+    }
+    private async Task<APIGatewayProxyResponse> DeleteTask(APIGatewayProxyRequest request)
+    {
+        var taskId = request.PathParameters["id"];
+        var taskToDelete = await _context.LoadAsync<TaskItem>(taskId);
+
+        if (taskToDelete == null)
+        {
+            return new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.NotFound,
+                Body = "{\"message\":\"Task not found.\"}"
+            };
+        }
+
+        await _context.DeleteAsync(taskToDelete);
+
+        return new APIGatewayProxyResponse
+        {
+            StatusCode = (int)HttpStatusCode.NoContent,
+            Body = ""
+        };
     }
 }
