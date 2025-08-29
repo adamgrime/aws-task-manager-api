@@ -1,49 +1,44 @@
-# AWS Lambda Empty Function Project
+# AWS Serverless Task Manager API
 
-This starter project consists of:
-* Function.cs - class file containing a class with a single function handler method
-* aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
+This project is a personal development portfolio piece. It is a simple, serverless RESTful API for managing to-do tasks, demonstrating my ability to build and deploy a modern cloud-native application.
 
-You may also have a test project depending on the options selected.
+## Technologies and Concepts
 
-The generated function handler is a simple method accepting a string argument that returns the uppercase equivalent of the input string. Replace the body of this method, and parameters, to suit your needs. 
+* **C# / .NET 8:** The core language and framework for the API logic.
+* **AWS Lambda:** The serverless compute service that runs the API functions. To showcase an understanding of function-as-a-service (FaaS) and event-driven architecture.
+* **Amazon API Gateway:** Used to create and manage the RESTful API endpoints, acting as a secure "front door" for the Lambda function.
+* **Amazon DynamoDB:** A fully managed NoSQL database used for data persistence. This demonstrates a working knowledge of non-relational databases and data modeling.
+* **AWS IAM:** Used to manage secure access and permissions (following the principle of least privilege) for the Lambda function.
+* **AWS CLI / .NET Lambda Tools:** Command-line tools used for local development, configuration, and deployment.
+* **Git & GitHub:** Version control and source code management. The project demonstrates a clean commit history and proper use of a repository.
+* **Clean Architecture:** The codebase is structured with a separation of concerns to ensure the application is maintainable, testable, and scalable.
 
-## Here are some steps to follow from Visual Studio:
+## API Endpoints
 
-To deploy your function to AWS Lambda, right click the project in Solution Explorer and select *Publish to AWS Lambda*.
+The following endpoints are currently implemented:
 
-To view your deployed function open its Function View window by double-clicking the function name shown beneath the AWS Lambda node in the AWS Explorer tree.
+* **`GET /tasks`**
+    * **Purpose:** Retrieves a list of all tasks.
+* **`POST /tasks`**
+    * **Purpose:** Creates a new task.
 
-To perform testing against your deployed function use the Test Invoke tab in the opened Function View window.
+## How to Run
 
-To configure event sources for your deployed function, for example to have your function invoked when an object is created in an Amazon S3 bucket, use the Event Sources tab in the opened Function View window.
+1.  **Prerequisites:** Ensure you have the .NET 8 SDK and AWS CLI installed and configured.
+2.  **Clone the Repository:**
+    ```bash
+    git clone git@github.com:<your-username>/aws-task-manager-api.git
+    cd aws-task-manager-api
+    ```
+3.  **Deploy to AWS:**
+    ```bash
+    dotnet lambda deploy-function --aws-profile <your-personal-profile-name>
+    ```
+4.  **Configure API Gateway:** Follow the instructions in the AWS Management Console to create a REST API and link the `/tasks` resource to your Lambda function.
 
-To update the runtime configuration of your deployed function use the Configuration tab in the opened Function View window.
+## What's Next
 
-To view execution logs of invocations of your function use the Logs tab in the opened Function View window.
-
-## Here are some steps to follow to get started from the command line:
-
-Once you have edited your template and code you can deploy your application using the [Amazon.Lambda.Tools Global Tool](https://github.com/aws/aws-extensions-for-dotnet-cli#aws-lambda-amazonlambdatools) from the command line.
-
-Install Amazon.Lambda.Tools Global Tools if not already installed.
-```
-    dotnet tool install -g Amazon.Lambda.Tools
-```
-
-If already installed check if new version is available.
-```
-    dotnet tool update -g Amazon.Lambda.Tools
-```
-
-Execute unit tests
-```
-    cd "TaskManager.Api/test/TaskManager.Api.Tests"
-    dotnet test
-```
-
-Deploy function to AWS Lambda
-```
-    cd "TaskManager.Api/src/TaskManager.Api"
-    dotnet lambda deploy-function
-```
+* Implementing the remaining CRUD operations: `GET /tasks/{id}`, `PUT /tasks/{id}`, and `DELETE /tasks/{id}`.
+* Adding unit tests for the core business logic.
+* Refactoring the project into separate layers to adhere to Clean Architecture principles.
+* Adding structured logging with AWS CloudWatch.
