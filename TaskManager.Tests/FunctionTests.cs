@@ -96,5 +96,36 @@ public class FunctionTests
         Assert.False(string.IsNullOrEmpty(savedTask.TaskId));
     }
 
+    [Fact]
+    public async Task GivenValidGetRequestWithId_WhenGetTaskByIdIsCalled_ThenItReturnsASingleTask()
+    {
+        var mockContext = new Mock<IDynamoDBContext>();
+        var mockLambdaContext = new Mock<ILambdaContext>(); 
+        mockLambdaContext.Setup(c => c.Logger).Returns(Mock.Of<ILambdaLogger>());
+
+        var taskId = "123-456";
+        var singleTask = new TaskItem { TaskId = taskId, Title = "Single Task", IsComplete = false };
+
+        mockContext.Setup(c => c.LoadAsync<TaskItem>(taskId, default))
+            .ReturnsAsync(singleTask);
+
+        var function = new Function(mockContext.Object);
+
+        var request = new APIGatewayProxyRequest
+        {
+            HttpMethod = "GET",
+            PathParameters = new Dictionary<string, string>
+            {
+                { "id", taskId }
+            }
+        };
+
+        var response = await function.FunctionHandler(request, mockLambdaContext.Object);
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Contains(JsonSerializer.Serialize(singleTask), response.Body);
+        mockContext.Verify(c => c.LoadAsync<TaskItem>(taskId, default), Times.Once);
+    }
+
 
 }

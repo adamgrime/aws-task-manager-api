@@ -37,11 +37,26 @@ public class Function
     {
         context.Logger.LogLine($"Received API Gateway request with HTTP Method: {request.HttpMethod}");
 
-        return request.HttpMethod switch
+        var taskId = request.PathParameters != null && request.PathParameters.ContainsKey("id") ? request.PathParameters["id"] : null;
+
+        if (request.HttpMethod == "GET" && taskId == null)
         {
-            "GET" => await ListTasks(),
-            "POST" => await CreateTask(request),
-            _ => new APIGatewayProxyResponse { StatusCode = (int)HttpStatusCode.MethodNotAllowed, Body = "{\"message\":\"Method not allowed.\"}" },
+            return await ListTasks();
+        }
+        else if (request.HttpMethod == "GET" && taskId != null)
+        {
+            return await GetTaskById(taskId);
+        }
+        else if (request.HttpMethod == "POST")
+        {
+            return await CreateTask(request);
+        }
+
+        // Default response for unhandled methods
+        return new APIGatewayProxyResponse
+        {
+            StatusCode = (int)HttpStatusCode.MethodNotAllowed,
+            Body = "{\"message\":\"Method not allowed.\"}"
         };
     }
 
@@ -71,6 +86,30 @@ public class Function
         {
             StatusCode = (int)HttpStatusCode.Created,
             Body = JsonSerializer.Serialize(taskItem),
+            Headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/json" }
+            }
+        };
+    }
+
+    private async Task<APIGatewayProxyResponse> GetTaskById(string taskId)
+    {
+        var task = await _context.LoadAsync<TaskItem>(taskId);
+
+        if (task == null)
+        {
+            return new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.NotFound,
+                Body = "{\"message\":\"Task not found.\"}"
+            };
+        }
+
+        return new APIGatewayProxyResponse
+        {
+            StatusCode = (int)HttpStatusCode.OK,
+            Body = JsonSerializer.Serialize(task),
             Headers = new Dictionary<string, string>
             {
                 { "Content-Type", "application/json" }
