@@ -25,6 +25,8 @@ The following endpoints are currently implemented:
     * **Purpose:** Retrieves a single task.
 * **`PUT /tasks/{id}`**
     * **Purpose:** Updates a single task.
+* **`DELETE /tasks/{id}`**
+    * **Purpose:** Deletes a single task.
 
 ## How to Run
 
