@@ -157,5 +157,34 @@ public class FunctionTests
             t => t.TaskId == taskId && t.Title == "New Title" && t.IsComplete == true), default), Times.Once);
     }
 
+    [Fact]
+    public async Task GivenValidDeleteRequest_WhenDeleteTaskIsCalled_ThenItDeletesTheTaskAndReturnsNoContentResponse()
+    {
+        // Given an existing task in the database
+        var mockContext = new Mock<IDynamoDBContext>();
+        var mockLambdaContext = new Mock<ILambdaContext>();
+        mockLambdaContext.Setup(c => c.Logger).Returns(Mock.Of<ILambdaLogger>());
 
+        var taskId = "existing-task-id";
+        var existingTask = new TaskItem { TaskId = taskId, Title = "To be deleted", IsComplete = false };
+
+        // Setup the mock to return the existing task when LoadAsync is called
+        mockContext.Setup(c => c.LoadAsync<TaskItem>(taskId, default))
+            .ReturnsAsync(existingTask);
+
+        var function = new Function(mockContext.Object);
+
+        var request = new APIGatewayProxyRequest
+        {
+            HttpMethod = "DELETE",
+            PathParameters = new Dictionary<string, string> { { "id", taskId } }
+        };
+
+        // When the Lambda function handler is invoked
+        var response = await function.FunctionHandler(request, mockLambdaContext.Object);
+
+        // Then it should return a 204 No Content status code and call DeleteAsync once
+        Assert.Equal(204, response.StatusCode);
+        mockContext.Verify(c => c.DeleteAsync(existingTask, default), Times.Once);
+    }
 }
