@@ -127,5 +127,35 @@ public class FunctionTests
         mockContext.Verify(c => c.LoadAsync<TaskItem>(taskId, default), Times.Once);
     }
 
+    [Fact]
+    public async Task GivenValidPutRequest_WhenUpdateTaskIsCalled_ThenItUpdatesTheTaskAndReturnsOkResponse()
+    {
+        // Given an existing task in the database
+        var mockContext = new Mock<IDynamoDBContext>();
+        var mockLambdaContext = new Mock<ILambdaContext>();
+        mockLambdaContext.Setup(c => c.Logger).Returns(Mock.Of<ILambdaLogger>());
+
+        var taskId = "existing-task-id";
+        var existingTask = new TaskItem { TaskId = taskId, Title = "Old Title", IsComplete = false };
+
+        mockContext.Setup(c => c.LoadAsync<TaskItem>(taskId, default))
+            .ReturnsAsync(existingTask);
+
+        var function = new Function(mockContext.Object);
+
+        var request = new APIGatewayProxyRequest
+        {
+            HttpMethod = "PUT",
+            PathParameters = new Dictionary<string, string> { { "id", taskId } },
+            Body = JsonSerializer.Serialize(new { title = "New Title", isComplete = true })
+        };
+
+        var response = await function.FunctionHandler(request, mockLambdaContext.Object);
+
+        Assert.Equal(200, response.StatusCode);
+        mockContext.Verify(c => c.SaveAsync(It.Is<TaskItem>(
+            t => t.TaskId == taskId && t.Title == "New Title" && t.IsComplete == true), default), Times.Once);
+    }
+
 
 }
